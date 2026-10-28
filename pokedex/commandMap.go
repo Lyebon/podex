@@ -8,7 +8,7 @@ func commandMap(cfg *config) error{
 		return nil
 	}
 
-	areas, err := getResponse(cfg.next)
+	areas, err := getResponse(cfg.next, cfg)
 	if err != nil {
 		return err
 	}

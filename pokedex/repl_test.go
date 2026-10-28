@@ -1,6 +1,9 @@
 package main
-import ("testing"
-"fmt")
+
+import (
+	"testing"
+	"fmt"
+)
 
 
 func TestCleanInput(t *testing.T) {

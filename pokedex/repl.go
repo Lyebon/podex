@@ -5,6 +5,7 @@ import (
 	"strings"
 	"os"
 	"bufio"
+	"github.com/Lyebon/pokedex/internal/pokecache"
 )
 
 func startRepl(cfg *config) {
@@ -46,8 +47,10 @@ type cliCommand struct {
 
 type config struct{
 	commands map[string]cliCommand
+	pokeApi		string
 	next		*string
 	previous	*string
+	cache		*pokecache.Cache
 }
 
 type pokemonAreas struct{

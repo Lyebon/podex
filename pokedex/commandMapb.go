@@ -7,7 +7,7 @@ func commandMapB(cfg *config) error{
 		fmt.Println("This is the start of the list")
 		return nil
 	}
-	areas, err := getResponse(cfg.previous)
+	areas, err := getResponse(cfg.previous, cfg)
 	if err != nil {
 		return err
 	}

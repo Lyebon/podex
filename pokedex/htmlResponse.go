@@ -2,23 +2,32 @@ package main
 
 import (
 	"net/http"
+	"io"
 	"encoding/json"
 )
 
-func getResponse(url *string) (pokemonAreas, error){
-	urlApi:= "https://pokeapi.co/api/v2/location-area/"
-	if url != nil{
-		urlApi = *url
+func getResponse(url *string, cfg *config) (pokemonAreas, error){
+	if url == nil{
+		url = &cfg.pokeApi
 	}
-	res, err := http.Get(urlApi)
-	if err != nil{
-		return pokemonAreas{}, err
+	req, ok := cfg.cache.Get(*url)
+	if !ok {
+		res, err := http.Get(*url)
+		if err != nil{
+			return pokemonAreas{}, err
+		}
+
+		defer res.Body.Close()
+		req, err = io.ReadAll(res.Body)
+		if err != nil{
+			return pokemonAreas{}, err
+		}
+
+		cfg.cache.Add(*url, req)
 	}
-
-	defer res.Body.Close()
-
+	
 	areas := pokemonAreas{}
-	err = json.NewDecoder(res.Body).Decode(&areas)
+	err := json.Unmarshal(req, &areas)
 	if err != nil{
 		return pokemonAreas{}, err
 	}

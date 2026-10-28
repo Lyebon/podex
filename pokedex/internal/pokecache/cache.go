@@ -1,0 +1,59 @@
+package pokecache
+
+import (
+	"time"
+	"sync"
+)
+
+type Cache struct{
+	cache		map[string]cacheEntry
+	deadlock	sync.Mutex
+	interval	time.Duration
+}
+
+type cacheEntry struct{
+	createdAt	time.Time
+	val			[]byte
+}
+
+func NewCache(wait time.Duration) *Cache{
+	newMap := make(map[string]cacheEntry)
+	c := Cache{
+		cache:		newMap,
+		interval: 	wait,
+	}
+	go c.reapLoop()
+	return &c
+}
+
+func (c *Cache)reapLoop() {
+	tick := time.NewTicker(c.interval)
+	for range tick.C{
+		c.deadlock.Lock()
+		for key,value :=range c.cache{
+			if time.Since(value.createdAt) > c.interval{
+			delete(c.cache, key)
+			}
+		}
+		c.deadlock.Unlock()
+	}
+}
+
+func (c *Cache)Add(key string, info []byte){
+	entry := cacheEntry{
+		createdAt: time.Now(),
+		val: info,
+	}
+	c.deadlock.Lock()
+	defer c.deadlock.Unlock()
+	c.cache[key] = entry
+}
+
+func (c *Cache)Get(key string) ([]byte , bool){
+	c.deadlock.Lock()
+	defer c.deadlock.Unlock()
+	if info, ok := c.cache[key]; ok {
+		return info.val, true
+	}
+	return []byte{}, false
+}
