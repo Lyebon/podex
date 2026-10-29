@@ -61,11 +61,6 @@ type pokemonAreas struct{
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
-	    "exit": {
-    	    name:        "exit",
-        	description: "Exit the Pokedex",
-        	callback:    commandExit,
-    	},
 		"help": {
 			name:		 "help",
 			description: "Display a help message",
@@ -81,5 +76,15 @@ func getCommands() map[string]cliCommand {
 			description: "Display the previous 20 locations",
 			callback:	 commandMapB,
 		},
+		"explore":{
+			name:		 "explore",
+			description: "Display the list of pokemons inside the map area",
+			callback:	 commandExplore,
+		},
+		"exit": {
+    	    name:        "exit",
+        	description: "Exit the Pokedex",
+        	callback:    commandExit,
+    	},
 	}
 }
