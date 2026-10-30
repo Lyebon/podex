@@ -1,22 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"strings"
-	"os"
 	"bufio"
-	"github.com/Lyebon/pokedex/internal/pokecache"
+	"fmt"
+	"github.com/Lyebon/pokedex/internal/pokeapi"
+	"os"
+	"strings"
 )
 
 func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
-	for true{
+	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
 		words := cleanInput(scanner.Text())
-		if len(words) == 0{
+		if len(words) == 0 {
 			continue
 		}
+
 		commandName := words[0]
 
 		command, exists := cfg.commands[commandName]
@@ -26,10 +27,8 @@ func startRepl(cfg *config) {
 				fmt.Println(err)
 			}
 			continue
-		} else {
-			fmt.Println("Unknown command")
-			continue
 		}
+		fmt.Println("Unknown command")
 	}
 }
 
@@ -45,46 +44,34 @@ type cliCommand struct {
 	callback    func(*config) error
 }
 
-type config struct{
-	commands map[string]cliCommand
-	pokeApi		string
-	next		*string
-	previous	*string
-	cache		*pokecache.Cache
-}
-
-type pokemonAreas struct{
-	Next		*string `json:"next"`
-	Previous	*string `json:"previous"`
-	Name		[]map[string]string `json:"results"`
+type config struct {
+	commands         map[string]cliCommand
+	client           pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
 }
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
-		"help": {
-			name:		 "help",
-			description: "Display a help message",
-			callback:	 commandHelp,
-		},
-		"map":{
-			name:		 "map",
-			description: "Display the next 20 locations",
-			callback:	 commandMap,
-		},
-		"mapb":{
-			name:		 "mapb",
-			description: "Display the previous 20 locations",
-			callback:	 commandMapB,
-		},
-		"explore":{
-			name:		 "explore",
-			description: "Display the list of pokemons inside the map area",
-			callback:	 commandExplore,
-		},
 		"exit": {
-    	    name:        "exit",
-        	description: "Exit the Pokedex",
-        	callback:    commandExit,
-    	},
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
+		},
+		"help": {
+			name:        "help",
+			description: "Display a help message",
+			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Display the next 20 locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Display the previous 20 locations",
+			callback:    commandMapB,
+		},
 	}
 }

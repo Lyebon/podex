@@ -1,14 +1,15 @@
 package main
 
 import (
+	"github.com/Lyebon/pokedex/internal/pokeapi"
 	"time"
-    "github.com/Lyebon/pokedex/internal/pokecache"
 )
-func main(){
-	cfg:= config{
-		commands: 	getCommands(),
-		pokeApi:	"https://pokeapi.co/api/v2/location-area/",
-		cache:		pokecache.NewCache(5 * time.Minute),
+
+func main() {
+	pokeClient := pokeapi.NewClient(5*time.Second, time.Minute*5)
+	cfg := config{
+		commands: getCommands(),
+		client:   pokeClient,
 	}
 	startRepl(&cfg)
 }
