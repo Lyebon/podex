@@ -9,3 +9,8 @@ type pokeAreas struct {
 		URL  string `json:"url"`
 	} `json:"results"`
 }
+
+type pokeEncounters struct {
+	Name			 string	`json:"name"`
+	PokemonEncounter []map[string]string `json:"pokemon_encounters"`
+}

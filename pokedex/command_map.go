@@ -4,13 +4,8 @@ import (
 	"fmt"
 )
 
-func commandMap(cfg *config) error {
-	if cfg.nextLocationsURL == nil && cfg.prevLocationsURL != nil {
-		fmt.Println("This is the end of the list")
-		return nil
-	}
-
-	areas, err := cfg.client.GetResponse(cfg.nextLocationsURL)
+func commandMap(cfg *config, rest ...string) error {
+	areas, err := cfg.client.GetAreaResponse(cfg.nextLocationsURL)
 	if err != nil {
 		return err
 	}
@@ -23,12 +18,12 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapB(cfg *config) error {
+func commandMapB(cfg *config, rest ...string) error {
 	if cfg.prevLocationsURL == nil {
 		fmt.Println("This is the start of the list")
 		return nil
 	}
-	areas, err := cfg.client.GetResponse(cfg.prevLocationsURL)
+	areas, err := cfg.client.GetAreaResponse(cfg.prevLocationsURL)
 	if err != nil {
 		return err
 	}
