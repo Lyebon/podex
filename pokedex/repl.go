@@ -23,6 +23,7 @@ func startRepl(cfg *config) {
 		if len(words) > 1{
 			rest = words[1]
 		}
+
 		command, exists := cfg.commands[commandName]
 		if exists {
 			err := command.callback(cfg, rest)

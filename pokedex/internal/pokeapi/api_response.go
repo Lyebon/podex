@@ -50,7 +50,7 @@ func (c *Client) GetAreaResponse(pageURL *string) (pokeAreas, error) {
 
 // refactorizar despues cuando funcione explore
 func (c *Client) GetPokemonEncounter(pageURL string) (pokeEncounters, error) {
-	url := baseURL + "/location-area" + pageURL
+	url := baseURL + "/location-area/" + pageURL
 	data, ok := c.cache.Get(url)
 	if !ok {
 		req, err := http.NewRequest("GET", url, nil)
