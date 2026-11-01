@@ -85,3 +85,40 @@ func (c *Client) GetPokemonEncounter(pageURL string) (pokeEncounters, error) {
 	return pokemons, nil
 
 }
+
+func (c *Client) GetPokemonCatch(pageURL string) (PokeCatch, error) {
+	url := baseURL + "/pokemon/" + pageURL
+	data, ok := c.cache.Get(url)
+	if !ok {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return PokeCatch{}, err
+		}
+
+		res, err := c.httpClient.Do(req)
+		if err != nil {
+			return PokeCatch{}, err
+		}
+		defer res.Body.Close()
+
+		if res.StatusCode > 299 {
+			return PokeCatch{}, fmt.Errorf("status code %v", res.StatusCode)
+		}
+
+		data, err = io.ReadAll(res.Body)
+		if err != nil {
+			return PokeCatch{}, err
+		}
+
+		c.cache.Add(url, data)
+	}
+
+	pokemon := PokeCatch{}
+	err := json.Unmarshal(data, &pokemon)
+	if err != nil {
+		return PokeCatch{}, err
+	}
+
+	return pokemon, nil
+
+}
